@@ -78,6 +78,18 @@ namespace structures {
             void next(Node* node) {  // setter: próximo
                 next_ = node;
             }
+
+            Node* prev() {  // getter: anterior
+                return prev_;
+            }
+
+            const Node* prev() const {  // getter const: anterior
+                return prev_;
+            }
+
+            void prev(Node* node) {  // setter: anterior
+                prev_ = node;
+            }
         
             private:
             T data_;
@@ -86,7 +98,26 @@ namespace structures {
         };
 
         Node* posiciona_dupla(std::size_t index) {
-
+            if (index >= size_) {
+                return nullptr;
+            }
+            if (index < size_ / 2) {
+                // anda a partir do head
+                Node* p = head;
+                for (std::size_t i = 0; i < index; ++i) {
+                    p = p->next();
+                }
+                return p;
+            } else {
+                // anda a partir do tail
+                Node* p = tail;
+                std::size_t pos = size_ - 1;
+                while (pos > index) {
+                    pos--;
+                    p = p->prev();
+                }
+                return p;
+            }
         }
 
         Node* head{nullptr};
@@ -118,32 +149,60 @@ void structures::DoublyLinkedList<T>::clear() {
 
 template <typename T>
 void structures::DoublyLinkedList<T>::push_back(const T& data) {
+    Node* novo;
+    novo = new Node(data);
+    novo -> next(nullptr);
+    novo -> prev(tail)
+
+    if (empty()) {
+        head = novo;
+    } else {
+        tail ->next(novo);
+    }
+
+    tail = novo;
+    size_++;
     
 }
 
 template <typename T>
 void structures::DoublyLinkedList<T>::push_front(const T& data) {
     Node* novo;
-    novo = new Node(data, head);
-
-    novo ->data_ = data;
-    novo ->prev_ = nullptr;
-    novo ->next_ = head;
-
-    if (!empty()) {
-        head ->prev_ = novo;
-    }
-    head = novo;
+    novo = new Node(data);
+    novo ->next(head);
+    novo ->prev(nullptr);
 
     if (empty()) {
         tail = novo;
+    } else {
+        head ->prev(novo);
     }
-    size_++
+
+    head = novo;
+    size_++;
 }
 
 template <typename T>
 void structures::DoublyLinkedList<T>::insert(const T& data, std::size_t index) {
-    
+    if (index >= size()) {
+        throw std::out_of_range("índice inválido");
+    } else if (index == 0) {
+        return push_front(data);
+    } else if (index == size()) {
+        return push_back(data);
+    }
+
+    Node* p = posiciona_dupla(index - 1);
+    Node* q = p ->next();
+
+    Node* novo = new Node(data);
+    novo -> next(q);
+    novo ->prev(p);
+
+    p ->next(novo);
+    q ->prev(novo);
+
+    size_++;
 }
 
 template <typename T>
