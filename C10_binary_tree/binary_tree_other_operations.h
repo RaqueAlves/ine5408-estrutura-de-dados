@@ -79,6 +79,19 @@ class BinaryTree {
 
         //! Inserção
         void insert(const T& data) {
+            if (data < data_) {
+                if (left_ == nullptr) {
+                    left_ = new Node(data);
+                } else {
+                    left_->insert(data);
+                }
+            } else if (data > data_) {
+                if (right_ == nullptr) {
+                    right_ = new Node(data);
+                } else {
+                    right_->insert(data);
+                }
+            }
         }
 
         //! Remoção
@@ -89,8 +102,21 @@ class BinaryTree {
 
         //! Contém
         bool contains(const T& data) const {
-            bool existe = false;
-            return existe;
+            if (data_ == data) {
+                return true;
+            } else if (data_ < data) {
+                if (left != nullptr) {
+                    return left->contains(data_);
+                } else {
+                    return false;
+                }
+            } else {  // data_ > data
+                if (right != nullptr) {
+                    return right->contains(data_);
+                } else {
+                    return false;
+                }
+            }
         }
 
         //! Pré ordem
@@ -104,13 +130,25 @@ class BinaryTree {
 
         //! Em ordem
         void in_order(ArrayList<T>& v) const {
+            if (left != nullptr) {
+                left->in_order(v);
+            }
+            v.push_back(data);
+            if (right != nullptr) {
+                right->in_order(v);
+            }
         }
 
         //! Pós ordem
         void post_order(ArrayList<T>& v) const {
+            if (left != nullptr) {
+                left->post_order(v);
+            }
+            if (right != nullptr) {
+                right->post_order(v);
+            }
+            v.push_back(data);
         }
-
-
 
      private:
         //! Complemento da funcão de remoção
@@ -130,9 +168,6 @@ class BinaryTree {
     Node* root_{nullptr};
     std::size_t size_{0};
 };
-
-
-
 
 //******************************************************************
 // Prova prática - implementações necessárias:
@@ -179,8 +214,6 @@ BinaryTree<T> BinaryTree<T>::balance() {
 }
 
 //******************************************************************
-
-
 
 //! Construtor
 template<typename T>
