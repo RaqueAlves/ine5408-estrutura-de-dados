@@ -61,7 +61,6 @@ private:
         }
 
         bool remove(const T& data_) {
-            // COLOQUE SEU CÓDIGO AQUI... SE IMPLEMENTAÇÃO RECURSIVA
             return true;
         }
 
@@ -173,7 +172,72 @@ void structures::BinaryTree<T>::insert(const T& data) {
 
 template<typename T>
 void structures::BinaryTree<T>::remove(const T& data) {
-    // COLOQUE SEU CÓDIGO AQUI...
+    if (root == nullptr) {
+        return;
+    }
+
+    Node* p = root; 
+    Node* q = nullptr;
+    while (p != nullptr && p->data != data) {
+        q = p;
+        if (data < p->data) {
+            p = p->left;
+        } else {
+            p = p->right;
+        }
+    }
+    if (p == nullptr) {
+        return;
+    }
+    
+    if (p->left == nullptr && p->right == nullptr) {
+        if (p == root) {
+            root = nullptr;
+        } else if (p == q->left) {
+            q->left = nullptr;
+        } else {
+            q->right = nullptr;
+        }
+        delete p;
+        size_--;
+
+    } else if (p->left == nullptr || p->right == nullptr) {
+        Node* r = nullptr;
+        if (p->left != nullptr) {
+            r = p->left;
+        } else {
+            r = p->right;
+        }
+
+        if (p == root) {
+            root = r;
+        } else if (p == q->left) {
+            q->left = r;
+        } else { 
+            q->right = r;
+        }
+        delete p;
+        size_--;
+        
+    } else {
+        Node* s = p->right;
+        Node* qs = p;
+
+        while (s->left != nullptr) {
+            qs = s;
+            s = s->left;
+        }
+        p->data = s->data;
+        
+        if (qs == p) { 
+            qs->right = s->right;
+        } else { 
+            qs->left = s->right;
+        }
+
+        delete s;
+    }
+    size_--;
 }
 
 template<typename T>
@@ -206,7 +270,6 @@ structures::ArrayList<T> structures::BinaryTree<T>::pre_order() const {
 
 template<typename T>
 structures::ArrayList<T> structures::BinaryTree<T>::in_order() const {
-    // COLOQUE SEU CÓDIGO AQUI...
     structures::ArrayList<T> L;
 	if (root != nullptr) {
 		root->in_order(L);
@@ -216,7 +279,6 @@ structures::ArrayList<T> structures::BinaryTree<T>::in_order() const {
 
 template<typename T>
 structures::ArrayList<T> structures::BinaryTree<T>::post_order() const {
-    // COLOQUE SEU CÓDIGO AQUI...
     structures::ArrayList<T> L;
 	if (root != nullptr) {
 		root->post_order(L);
